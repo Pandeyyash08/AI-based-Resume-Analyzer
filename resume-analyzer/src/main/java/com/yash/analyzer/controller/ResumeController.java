@@ -28,16 +28,14 @@ public class ResumeController {
         return "health";
     }
 
+    // ── Original endpoint (kept for backward compatibility) ──
     @PostMapping("/analyze")
     public ResponseEntity<?> analyzeResume(@RequestParam("file") MultipartFile file) {
         try {
-
             Tika tika = new Tika();
             String extractedText = tika.parseToString(file.getInputStream());
 
-
             String aiFeedback = geminiService.getAnalysis(extractedText);
-
 
             ResumeRecord record = new ResumeRecord();
             record.setFilename(file.getOriginalFilename());
@@ -45,9 +43,7 @@ public class ResumeController {
             record.setAiAnalysis(aiFeedback);
             record.setCreatedAt(LocalDateTime.now());
 
-
             resumeRepository.save(record);
-
 
             return ResponseEntity.ok(Map.of(
                     "status", "success",
@@ -58,6 +54,34 @@ public class ResumeController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error processing resume: " + e.getMessage());
+        }
+    }
+
+    // ── New endpoint: extract raw text only (used by advanced frontend) ──
+    @PostMapping("/extract")
+    public ResponseEntity<?> extractText(@RequestParam("file") MultipartFile file) {
+        try {
+            Tika tika = new Tika();
+            String extractedText = tika.parseToString(file.getInputStream());
+
+            // Save record with empty AI analysis (frontend handles AI separately)
+            ResumeRecord record = new ResumeRecord();
+            record.setFilename(file.getOriginalFilename());
+            record.setContent(extractedText);
+            record.setAiAnalysis("pending");
+            record.setCreatedAt(LocalDateTime.now());
+
+            resumeRepository.save(record);
+
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "filename", file.getOriginalFilename(),
+                    "text", extractedText
+            ));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error extracting text: " + e.getMessage());
         }
     }
 }
