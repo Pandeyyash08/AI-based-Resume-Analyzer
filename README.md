@@ -140,7 +140,10 @@ A full-stack resume ATS analysis app using React + Spring Boot + MongoDB + Groq 
 
 Made for forking into a live ATS resume scanner with OpenAI-style scoring.
 
-<img width="1903" height="1095" alt="image" src="https://github.com/user-attachments/assets/e7fe00da-117f-4835-be5b-5d72b3ab5093" />
+<img width="1896" height="1032" alt="Screenshot 2026-03-30 133934" src="https://github.com/user-attachments/assets/c7718f6a-6393-4698-ac62-7a5128f2f8cc" />
 
+<img width="1887" height="1068" alt="Screenshot 2026-03-30 133904" src="https://github.com/user-attachments/assets/1619ca7c-d26c-4df7-a583-c56bf94e187a" />
+
+<img width="1908" height="817" alt="Screenshot 2026-03-30 133913" src="https://github.com/user-attachments/assets/e42cfe60-e50f-4643-bcf6-faee055d8a0a" />
 
 
