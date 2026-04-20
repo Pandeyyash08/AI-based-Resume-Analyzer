@@ -1,14 +1,15 @@
 server.port=8080
 
 # 1. Database - MongoDB Atlas
-spring.mongodb.uri=${SPRING_MONGODB_URI:mongodb://localhost:27017/resume_analyzer_db}
+# Replace with your actual MongoDB connection string
+spring.mongodb.uri=mongodb+srv://username:password@cluster.mongodb.net/database_name?retryWrites=true&w=majority
 
 # 2. Upload Limits
 spring.servlet.multipart.max-file-size=10MB
 spring.servlet.multipart.max-request-size=10MB
 
-# 3. AI API - Use environment variable or demo default
-groq.api.key=${GROQ_API_KEY:demo-key-for-testing}
+# 3. AI API - Use environment variables
+groq.api.key=${GROQ_API_KEY:your-groq-api-key}
 groq.api.url=${GROQ_API_URL:https://api.groq.com/openai/v1/chat/completions}
 
 # 4. Logging
