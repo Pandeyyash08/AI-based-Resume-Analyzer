@@ -504,4 +504,139 @@ body {
   .decision-grid { grid-template-columns: 1fr; }
   .rtab          { padding: 7px 10px; font-size: 0.76rem; }
   .upload-title  { font-size: 2rem; }
+  .jobs-grid     { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════════════════════
+   JOB RECOMMENDATIONS STYLES
+══════════════════════════════════════════════════════ */
+.section-desc {
+  color: var(--text-muted);
+  margin: 0.5rem 0 1.5rem;
+  font-size: 0.95rem;
+}
+
+.fetch-jobs-btn {
+  background: linear-gradient(135deg, var(--accent), #d084ff);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--r-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.fetch-jobs-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(170, 59, 255, 0.3);
+}
+
+.fetch-jobs-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.job-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.job-card:hover {
+  border-color: var(--accent-border);
+  box-shadow: 0 8px 24px rgba(170, 59, 255, 0.15);
+  transform: translateY(-4px);
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.job-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.job-score {
+  background: var(--accent-bg);
+  color: var(--accent);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--r-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.job-company,
+.job-location,
+.job-type,
+.job-salary {
+  margin: 0.5rem 0;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.job-skills {
+  background: var(--accent-bg);
+  padding: 0.75rem;
+  border-radius: var(--r-md);
+  margin: 1rem 0;
+}
+
+.skills-label {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.job-reason {
+  background: var(--surface);
+  padding: 0.75rem;
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-sm);
+  margin: 1rem 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.job-reason em {
+  font-style: italic;
+  color: var(--text);
+}
+
+.job-link {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--r-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.job-link:hover {
+  background: #9a2be0;
+  transform: translateX(2px);
 }

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
 
@@ -271,7 +271,9 @@ function UploadPanel({ onResult, loading, setLoading }) {
 
       const parsed = JSON.parse(raw);
       console.log("Parsed analysis result:", parsed);
-      onResult({ ...parsed, filename });
+      const resumeId = extractRes.data.id;
+      console.log("Resume ID:", resumeId);
+      onResult({ ...parsed, filename, id: resumeId });
     } catch (e) {
       console.error("Analysis error details:", e);
       const errorMsg =
@@ -406,6 +408,39 @@ function UploadPanel({ onResult, loading, setLoading }) {
 // ── Results Panel ─────────────────────────────────────────────────────────────
 function ResultsPanel({ data, onReset }) {
   const [activeTab, setActiveTab] = useState("overview");
+  const [resumeId, setResumeId] = useState(data?.id || null);
+  const [recommendations, setRecommendations] = useState([]);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
+
+  // Update resumeId when data changes
+  useEffect(() => {
+    if (data?.id) {
+      setResumeId(data.id);
+      console.log("Resume ID set to:", data.id);
+    }
+  }, [data?.id]);
+
+  const handleRecommendations = async () => {
+    if (!resumeId) {
+      alert("Resume ID not found. Please upload again.");
+      return;
+    }
+
+    setRecommendationsLoading(true);
+    try {
+      const { data: jobs } = await axios.get(
+        `${API_BASE}/${resumeId}/recommendations`,
+      );
+      setRecommendations(jobs || []);
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+      alert(
+        "Failed to fetch job recommendations. Make sure the backend is running.",
+      );
+    } finally {
+      setRecommendationsLoading(false);
+    }
+  };
 
   const tabs = [
     { id: "overview", label: "Overview", icon: "🎯" },
@@ -415,6 +450,7 @@ function ResultsPanel({ data, onReset }) {
     { id: "interview", label: "Interview", icon: "🎤" },
     { id: "coverletter", label: "Cover Letter", icon: "📝" },
     { id: "decision", label: "Recruiter", icon: "👔" },
+    { id: "jobs", label: "Job Matches", icon: "💼" },
   ];
 
   const d = data;
@@ -774,6 +810,92 @@ function ResultsPanel({ data, onReset }) {
                   • {r}
                 </div>
               ))}
+            </Section>
+          </div>
+        )}
+
+        {/* JOB RECOMMENDATIONS */}
+        {activeTab === "jobs" && (
+          <div className="tab-pane">
+            <Section title="AI-Powered Job Matches" icon="💼">
+              <p className="section-desc">
+                Based on your resume skills and experience, we've matched you
+                with relevant job opportunities.
+              </p>
+
+              <button
+                className="fetch-jobs-btn"
+                onClick={handleRecommendations}
+                disabled={recommendationsLoading}
+              >
+                {recommendationsLoading
+                  ? "⏳ Fetching jobs..."
+                  : "🔍 Find Job Matches"}
+              </button>
+
+              {recommendations.length > 0 ? (
+                <div className="jobs-grid">
+                  {recommendations.map((job, idx) => (
+                    <div key={job.jobId || idx} className="job-card">
+                      <div className="job-header">
+                        <h3 className="job-title">{job.jobTitle}</h3>
+                        <span className="job-score">
+                          {Math.round(job.matchScore || 0)}% Match
+                        </span>
+                      </div>
+
+                      <p className="job-company">
+                        🏢 {job.companyName || "Company"}
+                      </p>
+
+                      <p className="job-location">
+                        📍 {job.location || "Remote"}
+                      </p>
+
+                      {job.employmentType && (
+                        <p className="job-type">💼 {job.employmentType}</p>
+                      )}
+
+                      {(job.salaryMin || job.salaryMax) && (
+                        <p className="job-salary">
+                          💰 ${job.salaryMin?.toLocaleString() || "N/A"} - $
+                          {job.salaryMax?.toLocaleString() || "N/A"}
+                        </p>
+                      )}
+
+                      <div className="job-skills">
+                        <span className="skills-label">
+                          Skills Match: {job.matchedSkillsCount || 0}/
+                          {job.totalRequiredSkills || 0}
+                        </span>
+                      </div>
+
+                      {job.matchReason && (
+                        <p className="job-reason">
+                          <em>"{job.matchReason}"</em>
+                        </p>
+                      )}
+
+                      {job.jobUrl && (
+                        <a
+                          href={job.jobUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="job-link"
+                        >
+                          View Job →
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="empty-msg">
+                  {recommendationsLoading
+                    ? "Loading..."
+                    : "Click 'Find Job Matches' to see recommendations"}
+                </p>
+              )}
             </Section>
           </div>
         )}
